@@ -1,0 +1,41 @@
+services:
+  wdv442-mysql:
+    image: mysql:8.0.36
+    restart: always
+    networks:
+      - wdv442
+    volumes:
+      - mysql_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: asl
+      MYSQL_PASSWORD: asl
+      MYSQL_DATABASE: wdv442_space_tracker
+
+  wdv442-node:
+    image: node:latest
+    user: node
+    working_dir: /home/node/app/src
+    networks:
+      - wdv442
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - .:/home/node/app
+    ports:
+      - "3000:3000"
+    command: >
+      sh -c "rm -rf node_modules &&
+             npm install &&
+             npm run watch"
+    restart: always
+    stdin_open: true
+    tty: true
+    depends_on:
+      - wdv442-mysql
+
+networks:
+  wdv442:
+
+volumes:
+  mysql_data:

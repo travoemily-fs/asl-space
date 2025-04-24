@@ -1,0 +1,20 @@
+# Ignore wildcards
+public/stylesheets/*
+public/scripts/*
+public/uploads/stars/*
+public/uploads/galaxies/*
+public/uploads/planets/*
+
+# Keeps
+!public/stylesheets/.gitkeep
+!public/scripts/.gitkeep
+!public/uploads/stars/.gitkeep
+!public/uploads/galaxies/.gitkeep
+!public/uploads/planets/.gitkeep
+
+# Node modules
+node_modules
+
+# Docker storage
+var/*
+!var/.gitkeep
