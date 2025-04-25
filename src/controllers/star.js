@@ -58,7 +58,7 @@ const create = async (req, res) => {
       });
     }
     // create new star instance
-    const Star = await Star.create({ name });
+    const star = await Star.create({ name });
     // handle 201 successful new instance
     res.status(201).json(star);
   } catch (err) {

@@ -2,31 +2,34 @@
 
 /* my notes
 relationships to remember:
-galaxy > HAS MANY > stars
+planets -> stars (BELONGS TO MANY)
 */
 
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class Galaxy extends Model {
+  class Planet extends Model {
     static associate(models) {
-      // galaxy HAS MANY stars association
-      Galaxy.hasMany(models.Star, {
-        foreignKey: "GalaxyId",
+      // planets belong to MANY stars
+      Planet.belongsToMany(models.Star, {
+        through: "StarsPlanets",
+        foreignKey: "PlanetId",
+        otherKey: "StarId",
         onDelete: "CASCADE",
         onUpdate: "CASCADE",
       });
     }
   }
-  Galaxy.init(
+  Planet.init(
     {
       name: DataTypes.STRING,
       size: DataTypes.INTEGER,
       description: DataTypes.TEXT,
+      GalaxyId: DataTypes.INTEGER,
     },
     {
       sequelize,
-      modelName: "Galaxy",
+      modelName: "Planet",
     }
   );
-  return Galaxy;
+  return Planet;
 };
