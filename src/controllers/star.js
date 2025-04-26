@@ -15,6 +15,9 @@ const index = async (req, res) => {
       stars.map((s) => ({
         id: s.id,
         name: s.name,
+        size: s.size,
+        description: s.description,
+        GalaxyId: s.GalaxyId,
       }))
     );
   } catch (err) {
@@ -34,6 +37,9 @@ const show = async (req, res) => {
       res.status(200).json({
         id: star.id,
         name: star.name,
+        size: star.size,
+        description: star.description,
+        GalaxyId: star.GalaxyId,
       });
     } else {
       // handle 404 not found error
@@ -50,7 +56,7 @@ const show = async (req, res) => {
 // POST localhost:3000/stars
 const create = async (req, res) => {
   try {
-    const { name } = req.body;
+    const { name, size, description, GalaxyId } = req.body;
     // handle no name or empty entries
     if (!name || name.trim() === "") {
       return res.status(400).json({
@@ -58,7 +64,7 @@ const create = async (req, res) => {
       });
     }
     // create new star instance
-    const star = await Star.create({ name });
+    const star = await Star.create({ name, size, description, GalaxyId });
     // handle 201 successful new instance
     res.status(201).json(star);
   } catch (err) {
@@ -74,10 +80,10 @@ const create = async (req, res) => {
 // PUT localhost:3000/stars/ID
 const update = async (req, res) => {
   try {
-    const { name } = req.body;
+    const { name, size, description, GalaxyId } = req.body;
     const { id } = req.params;
     const [updated] = await Star.update(
-      { name },
+      { name, size, description, GalaxyId },
       {
         where: { id },
       }
@@ -122,4 +128,67 @@ const remove = async (req, res) => {
   }
 };
 
-module.exports = { index, show, create, update, remove };
+// establish route for ADDING stars + planets association
+const addPlanet = async (req, res) => {
+  try {
+    const star = await Star.findByPk(req.params.starId);
+    const planet = await Planet.findByPk(req.body.planetId);
+    // if star and planet associate
+    if (star && planet) {
+      await star.addPlanet(planet);
+      // handles 200 successful association
+      res.status(200).json({
+        message: "Association successfully established.",
+      });
+    } else {
+      // handles 404 not found error
+      res.status(404).json({
+        error: "Star or planet not found.",
+      });
+    }
+  } catch (err) {
+    // including error for debugging
+    console.error("Error associating planet to star:", err);
+    // handle 500 server side error
+    res.status(500).json({
+      error: "Failed to associate planet with star",
+    });
+  }
+};
+
+// establish route for DELETING stars + planets association
+const removePlanet = async (req, res) => {
+  try {
+    const star = await Star.findByPk(req.params.starId);
+    const planet = await Planet.findByPk(req.body.planetId);
+    // if connection is there, remove it
+    if (star && planet) {
+      await star.removePlanet(planet);
+      // handles 200 successful deletion
+      res.status(200).json({
+        message: "Association successfully deleted.",
+      });
+    } else {
+      // handles 404 not found error
+      res.status(404).json({
+        error: "Star or planet not found.",
+      });
+    }
+  } catch (err) {
+    // including error for debugging
+    console.error("Error disassociating planet from star:", err);
+    // handle 500 server side error
+    res.status(500).json({
+      error: "Failed to disassociate planet with star",
+    });
+  }
+};
+module.exports = {
+  index,
+  show,
+  create,
+  update,
+  remove,
+  addPlanet,
+  removePlanet,
+};

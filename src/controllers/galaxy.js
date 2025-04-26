@@ -14,6 +14,8 @@ const index = async (req, res) => {
       galaxies.map((g) => ({
         id: g.id,
         name: g.name,
+        size: g.size,
+        description: g.description,
       }))
     );
   } catch (err) {
@@ -33,6 +35,8 @@ const show = async (req, res) => {
       res.status(200).json({
         id: galaxy.id,
         name: galaxy.name,
+        size: galaxy.size,
+        description: galaxy.description,
       });
     } else {
       // handle 404 not found error
@@ -49,7 +53,7 @@ const show = async (req, res) => {
 // POST localhost:3000/galaxies
 const create = async (req, res) => {
   try {
-    const { name } = req.body;
+    const { name, size, description } = req.body;
     // handle no name or empty entries
     if (!name || name.trim() === "") {
       return res.status(400).json({
@@ -57,7 +61,7 @@ const create = async (req, res) => {
       });
     }
     // create new galaxy instance
-    const galaxy = await Galaxy.create({ name });
+    const galaxy = await Galaxy.create({ name, size, description });
     // handle 201 successful new instance
     res.status(201).json(galaxy);
   } catch (err) {
@@ -73,10 +77,10 @@ const create = async (req, res) => {
 // PUT localhost:3000/galaxies/ID
 const update = async (req, res) => {
   try {
-    const { name } = req.body;
+    const { name, size, description } = req.body;
     const { id } = req.params;
     const [updated] = await Galaxy.update(
-      { name },
+      { name, size, description },
       {
         where: { id },
       }

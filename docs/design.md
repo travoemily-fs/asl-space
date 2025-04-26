@@ -62,3 +62,11 @@ planets -> stars<br>
 3. include **PlanetId** as foreign key
 4. include **StarId** as other key
 5. add async **onDelete** and **onUpdate** params
+
+## **endpoints**
+
+all of my request templates will be stored here for ease of use!
+
+### **postman**
+
+using postman for quickly verifying and debugging errors in reaching endpoints before hitting those endpoints with cURL requests to fulfill assignment specs.

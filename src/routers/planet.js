@@ -11,7 +11,7 @@ const router = new express.Router()
 router.get(`/`, planetCtlr.index)
 router.post(`/`, planetCtlr.create)
 router.get(`/:id`, planetCtlr.show) 
-router.put(`/:id`, planetCtlr.update) 
+router.patch(`/:id`, planetCtlr.update) 
 router.delete(`/:id`, planetCtlr.remove) 
 
 // export "router"

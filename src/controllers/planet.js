@@ -14,6 +14,9 @@ const index = async (req, res) => {
       planets.map((p) => ({
         id: p.id,
         name: p.name,
+        size: p.size,
+        description: p.description,
+        GalaxyId: p.GalaxyId,
       }))
     );
   } catch (err) {
@@ -33,6 +36,9 @@ const show = async (req, res) => {
       res.status(200).json({
         id: planet.id,
         name: planet.name,
+        size: planet.size,
+        description: planet.description,
+        GalaxyId: planet.GalaxyId,
       });
     } else {
       // handle 404 not found error
@@ -49,7 +55,7 @@ const show = async (req, res) => {
 // POST localhost:3000/planets
 const create = async (req, res) => {
   try {
-    const { name } = req.body;
+    const { name, size, description, GalaxyId } = req.body;
     // handle no name or empty entries
     if (!name || name.trim() === "") {
       return res.status(400).json({
@@ -57,7 +63,7 @@ const create = async (req, res) => {
       });
     }
     // create new planet instance
-    const planet = await Planet.create({ name });
+    const planet = await Planet.create({ name, size, description, GalaxyId });
     // handle 201 successful new instance
     res.status(201).json(planet);
   } catch (err) {
@@ -73,10 +79,10 @@ const create = async (req, res) => {
 // PUT localhost:3000/planets/ID
 const update = async (req, res) => {
   try {
-    const { name } = req.body;
+    const { name, size, description, GalaxyId } = req.body;
     const { id } = req.params;
     const [updated] = await Planet.update(
-      { name },
+      { name, size, description, GalaxyId },
       {
         where: { id },
       }
