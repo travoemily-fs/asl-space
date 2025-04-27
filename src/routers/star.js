@@ -15,6 +15,7 @@ router.patch(`/:id`, starCtlr.update);
 router.delete(`/:id`, starCtlr.remove);
 // association routes
 router.post("/:starId/planets", starCtlr.addPlanet);
+router.get("/:starId/planets", starCtlr.getPlanetsForStar);
 router.delete("/:starId/planets", starCtlr.removePlanet);
 
 // export "router"

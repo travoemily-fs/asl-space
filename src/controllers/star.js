@@ -1,4 +1,5 @@
-const Star = require("../models").Star;
+// remember to bring in planet model too!
+const { Star, Planet } = require("../models");
 
 /* my notes
 relationships to remember:
@@ -183,6 +184,32 @@ const removePlanet = async (req, res) => {
     });
   }
 };
+
+// establish route for GET ALL stars + planet associations
+const getPlanetsForStar = async (req, res) => {
+  try {
+    const star = await Star.findByPk(req.params.starId, {
+      include: Planet,
+    });
+    // if star isn't found, handle 404 not found error
+    if (!star) {
+      return res.status(404).json({
+        error: "Star not found",
+      });
+    }
+    const planets = await star.getPlanets();
+    // handles 200 success
+    res.status(200).json(planets);
+  } catch (err) {
+    // including error for debugging
+    console.error("Error fetching planets for star:", err);
+    // handles 500 server side error
+    res.status(500).json({
+      error: "Failed to fetch planets for star.",
+    });
+  }
+};
+
 module.exports = {
   index,
   show,
@@ -191,4 +218,5 @@ module.exports = {
   remove,
   addPlanet,
   removePlanet,
+  getPlanetsForStar,
 };

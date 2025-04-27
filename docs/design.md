@@ -63,10 +63,60 @@ planets -> stars<br>
 4. include **StarId** as other key
 5. add async **onDelete** and **onUpdate** params
 
-## **endpoints**
+### **stars/planets association**
+
+these routes must be defined in the stars.js controller and is managed internally by sequelize
+
+this outline can be applicable to both **addPlanet** and **removePlanet** functions
+
+1. define star and planet variable with primary key identifier
+2. check that both star and planet exist
+3. create / remove association
+4. handle 200 success
+5. handle 404 not found
+6. handle 500 server-side failure
+
+for the visual demo, make a quick get function **getPlanetsforStar** that:
+
+1. gets star by primary key id
+2. if not found handle 404 not found error
+3. if found, print results
+4. handle 500 error status for server issues
+
+## **cURL templates**
 
 all of my request templates will be stored here for ease of use!
 
-### **postman**
+**POST**
 
-using postman for quickly verifying and debugging errors in reaching endpoints before hitting those endpoints with cURL requests to fulfill assignment specs.
+`curl -X POST -d "name=[NAME]&size=[SIZE]&description=[DESC]" http://localhost:3000/[MODEL]s`
+
+- for STARS and PLANETS add `&GalaxyId=[#]` after description
+
+**POST** stars / planet association
+
+`curl -X POST -d "planetId=[#]" http://localhost:3000/stars/[STARID]/planets`
+
+**GET _ALL_**
+
+`curl http://localhost:3000/[MODEL]s`
+
+**GET _ALL_** stars / planets association (for visual demonstration)
+
+`curl http://localhost:3000/`
+
+**GET by ID**
+
+`curl http://localhost:3000/[MODEL]s/[#]`
+
+**PUT/PATCH**
+
+`curl -X PATCH -d "name=[NAME]" http://localhost:3000/[MODEL]s/[#]`
+
+**DELETE**
+
+`curl -X DELETE http://localhost:3000/[MODEL]s/[#]`
+
+**DELETE** stars / planet association
+
+`curl -X DELETE -d "planetId=[#]" http://localhost:3000/stars/[STARID]/planets`
