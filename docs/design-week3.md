@@ -1,4 +1,6 @@
-## my notes for asl space assignment
+## my notes for asl space assignment week 3
+
+> this markdown file will contain all of the updates and important notes taken in regards to module 3!
 
 ### commands to remember:
 
