@@ -1,0 +1,16 @@
+{% extends "layouts/_default.twig" %}
+
+{% block content %}
+<h1>Stars</h1>
+{% for star in stars  %}
+<h3>{{ star.name }}</h3>
+<ul>
+<li><strong>size:</strong> {{ star.size }}</li>
+<li><strong>description:</strong> {{ star.description }}</li>
+<li><strong>galaxy:</strong> {{ star.Galaxy.name }}</li>
+</ul>
+{% endfor %}
+
+<a href="/">← Back to Home</a>
+
+{% endblock %}

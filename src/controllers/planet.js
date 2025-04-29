@@ -1,4 +1,4 @@
-const Planet = require("../models").Planet;
+const { Planet, Galaxy } = require("../models");
 
 /* my notes
 relationships to remember:
@@ -8,22 +8,17 @@ planet > BELONGS TO MANY > stars
 // GET localhost:3000/planets
 const index = async (req, res) => {
   try {
-    const planets = await Planet.findAll();
+    const planets = await Planet.findAll({
+      include: Galaxy,
+    });
     // handle 200 success status
-    res.status(200).json(
-      planets.map((p) => ({
-        id: p.id,
-        name: p.name,
-        size: p.size,
-        description: p.description,
-        GalaxyId: p.GalaxyId,
-      }))
-    );
+    res.status(200).render("planets/index", {
+      title: "All planets",
+      planets,
+    });
   } catch (err) {
-    // including console logs for debugging
-    console.error("Error fetching planets:", err);
-    // handles 500 server-side error
-    res.status(500).json({ error: "Failed to fetch planets" });
+    console.error("Error fetching planets", err);
+    res.status(500).render("error", { error: "Failed to fetch planets" });
   }
 };
 

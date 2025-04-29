@@ -1,5 +1,5 @@
 // remember to bring in planet model too!
-const { Star, Planet } = require("../models");
+const { Star, Planet, Galaxy } = require("../models");
 
 /* my notes
 relationships to remember:
@@ -10,22 +10,17 @@ star > HAS MANY > planets
 // GET localhost:3000/stars
 const index = async (req, res) => {
   try {
-    const stars = await Star.findAll();
+    const stars = await Star.findAll({
+      include: Galaxy
+    });
     // handle 200 success status
-    res.status(200).json(
-      stars.map((s) => ({
-        id: s.id,
-        name: s.name,
-        size: s.size,
-        description: s.description,
-        GalaxyId: s.GalaxyId,
-      }))
-    );
+    res.status(200).render("stars/index", {
+      title: "All stars",
+      stars,
+    });
   } catch (err) {
-    // including console logs for debugging
-    console.error("Error fetching stars:", err);
-    // handles 500 server-side error
-    res.status(500).json({ error: "Failed to fetch stars" });
+    console.error("Error fetching stars", err);
+    res.status(500).render("error", { error: "Failed to fetch stars" });
   }
 };
 

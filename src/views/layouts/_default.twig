@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>{{ title }}</title>
+{% include 'partials/header.twig' %}
 </head>
 <body>
-{% include 'partials/header.twig' %}
+{% include 'partials/navbar.twig' %}
     {% block content %}
     {% endblock %}
 {% include 'partials/footer.twig' %}

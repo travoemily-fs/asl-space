@@ -10,19 +10,13 @@ const index = async (req, res) => {
   try {
     const galaxies = await Galaxy.findAll();
     // handle 200 success status
-    res.status(200).json(
-      galaxies.map((g) => ({
-        id: g.id,
-        name: g.name,
-        size: g.size,
-        description: g.description,
-      }))
-    );
+    res.status(200).render("galaxies/index", {
+      title: "All Galaxies",
+      galaxies,
+    });
   } catch (err) {
-    // including console logs for debugging
     console.error("Error fetching galaxies", err);
-    // handles 500 server-side error
-    res.status(500).json({ error: "Failed to fetch galaxies" });
+    res.status(500).render("error", { error: "Failed to fetch galaxies" });
   }
 };
 
