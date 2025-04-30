@@ -5,13 +5,10 @@ const { Star, Planet, Galaxy } = require("../models");
 relationships to remember:
 star > BELONGS TO > galaxy
 star > HAS MANY > planets
-*/
 
-// GET localhost:3000/stars
-const index = async (req, res) => {
   try {
     const stars = await Star.findAll({
-      include: Galaxy
+      include: Galaxy,
     });
     // handle 200 success status
     res.status(200).render("stars/index", {
@@ -22,6 +19,11 @@ const index = async (req, res) => {
     console.error("Error fetching stars", err);
     res.status(500).render("error", { error: "Failed to fetch stars" });
   }
+*/
+
+// GET localhost:3000/stars
+const index = async (req, res) => {
+  res.render("stars.index");
 };
 
 // GET localhost:3000/stars/ID
@@ -100,6 +102,26 @@ const update = async (req, res) => {
     res.status(500).json({
       error: "Server error while updating star.",
     });
+  }
+};
+
+// GET deletion confirmation localhost:3000/stars/:id/delete
+const confirmDelete = async (req, res) => {
+  try {
+    const star = await Star.findByPk(req.params.id);
+    if (!star) {
+      // handle 404 not found error
+      return res.status(404).render("error", { error: "Star not found" });
+    }
+    res.render("stars/confirm_delete", {
+      title: "Confirm deletion",
+      star,
+    });
+  } catch (err) {
+    // including console logs for debugging
+    console.error("Error loading delete confirmation:", err);
+    // handle 500 server side error
+    res.status(500).render("error", { error: "Server error encounter" });
   }
 };
 
@@ -205,6 +227,11 @@ const getPlanetsForStar = async (req, res) => {
   }
 };
 
+// form controller
+const form = (req, res) => {
+  res.status(200).json(`Galaxy#form(:id)`);
+};
+
 module.exports = {
   index,
   show,
@@ -214,4 +241,6 @@ module.exports = {
   addPlanet,
   removePlanet,
   getPlanetsForStar,
+  confirmDelete,
+  form,
 };

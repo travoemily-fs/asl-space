@@ -1,16 +1,30 @@
 {% extends "layouts/_default.twig" %}
 
 {% block content %}
-<h1>Planets</h1>
-{% for planet in planets  %}
-<h3>{{ planet.name }}</h3>
-<ul>
-<li><strong>size:</strong> {{ planet.size }}</li>
-<li><strong>description:</strong> {{ planet.description }}</li>
-<li><strong>galaxy</strong> {{ planet.Galaxy.name }}</li>
-</ul>
-{% endfor %}
+  <h1>{{ title }}</h1>
 
-<a href="/">← Back to Home</a>
+  {% for planet in planets %}
+    <section>
+      <h3>{{ planet.name }}</h3>
+      <ul>
+        <li><strong>Size:</strong> {{ planet.size }}</li>
+        <li><strong>Description:</strong> {{ planet.description }}</li>
+        <li><strong>Galaxy:</strong> {{ planet.Galaxy.name }}</li>
 
+        {% if planet.Stars.length > 0 %}
+          <li><strong>Stars:</strong>
+            <ul>
+              {% for star in planet.Stars %}
+                <li>{{ star.name }}</li>
+              {% endfor %}
+            </ul>
+          </li>
+        {% else %}
+          <li><em>No stars linked</em></li>
+        {% endif %}
+      </ul>
+    </section>
+  {% endfor %}
+
+  <p><a href="/">Go back</a></p>
 {% endblock %}

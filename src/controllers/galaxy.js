@@ -3,13 +3,11 @@ const Galaxy = require("../models").Galaxy;
 /* my notes
 relationships to remember:
 galaxy > HAS MANY > stars
-*/
 
-// GET localhost:3000/galaxies
-const index = async (req, res) => {
+
   try {
     const galaxies = await Galaxy.findAll();
-    // handle 200 success status
+// handle 200 success
     res.status(200).render("galaxies/index", {
       title: "All Galaxies",
       galaxies,
@@ -18,9 +16,15 @@ const index = async (req, res) => {
     console.error("Error fetching galaxies", err);
     res.status(500).render("error", { error: "Failed to fetch galaxies" });
   }
+
+*/
+
+// GET localhost:3000/galaxies
+const index = async (req, res) => {
+res.render('galaxies.index')
 };
 
-// GET localhost:3000/galaxies/ID
+// GET localhost:3000/galaxies/:id
 const show = async (req, res) => {
   try {
     const galaxy = await Galaxy.findByPk(req.params.id);
@@ -68,7 +72,7 @@ const create = async (req, res) => {
   }
 };
 
-// PUT localhost:3000/galaxies/ID
+// PUT localhost:3000/galaxies/:id
 const update = async (req, res) => {
   try {
     const { name, size, description } = req.body;
@@ -98,7 +102,27 @@ const update = async (req, res) => {
   }
 };
 
-// DELETE localhost:3000/galaxies/ID
+// GET deletion confirmation localhost:3000/galaxies/:id/delete
+const confirmDelete = async (req, res) => {
+  try {
+    const galaxy = await Galaxy.findByPk(req.params.id);
+    if (!galaxy) {
+      // handle 404 not found error
+      return res.status(404).render("error", { error: "Galaxy not found" });
+    }
+    res.render("galaxes/confirm_delete", {
+      title: "Confirm deletion",
+      galaxy,
+    });
+  } catch (err) {
+    // including console logs for debugging
+    console.error("Error loading delete confirmation:", err);
+    // handle 500 server side error
+    res.status(500).render("error", { error: "Server error encounter" });
+  }
+};
+
+// DELETE localhost:3000/galaxies/:id
 const remove = async (req, res) => {
   try {
     const { id } = req.params;
@@ -119,4 +143,9 @@ const remove = async (req, res) => {
   }
 };
 
-module.exports = { index, show, create, update, remove };
+// form controller
+const form = (req,res) => {
+  res.status(200).json(`Galaxy#form(:id)`)
+}
+
+module.exports = { index, show, create, update, remove, confirmDelete, form };

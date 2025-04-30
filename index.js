@@ -23,6 +23,9 @@ app.get("/", async (req, res) => {
     .render("home/home", { title: "Star Tracker Library", galaxy });
 });
 
+// incorporate css
+app.use(express.static("public"));
+
 // register our RESTful routers with our "app"
 app.use("/planets", routers.planet);
 app.use("/stars", routers.star);

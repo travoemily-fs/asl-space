@@ -17,6 +17,12 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: "CASCADE",
         onUpdate: "CASCADE",
       });
+      // planets belong to ONE galaxy
+      Planet.belongsTo(models.Galaxy, {
+        foreignKey: "GalaxyId",
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
+      });
     }
   }
   Planet.init(

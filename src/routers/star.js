@@ -18,5 +18,12 @@ router.post("/:starId/planets", starCtlr.addPlanet);
 router.get("/:starId/planets", starCtlr.getPlanetsForStar);
 router.delete("/:starId/planets", starCtlr.removePlanet);
 
+// HTML5 specific routes
+router.get("/new", starCtlr.form); // shows create form
+router.get("/:id/edit", starCtlr.form); // shows edt form
+router.get("/:id/delete", starCtlr.confirmDelete); // double checks delete
+router.post("/:id/delete", starCtlr.remove); // actually deletes
+router.post("/:id", starCtlr.update); // handles form editing
+
 // export "router"
 module.exports = router;
