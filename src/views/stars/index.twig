@@ -1,10 +1,13 @@
 {% extends "layouts/_default.twig" %}
 
+{% block pageName %}All Stars{% endblock %}
 {% block content %}
-<h1>Stars</h1>
 {% for star in stars  %}
 <section>
 <h3>{{ star.name }}</h3>
+<li>
+{% include 'partials/actions.twig' with { resource: 'stars', id: star.id} %}
+</li>
 <ul>
 <li><strong>size:</strong> {{ star.size }}</li>
 <li><strong>description:</strong> {{ star.description }}</li>
@@ -12,6 +15,7 @@
 </ul>
 </section>
 {% endfor %}
+<a href="/stars/new">Create New Star</a>
 
 <a href="/">Go back</a>
 

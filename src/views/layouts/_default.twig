@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>{{ title | default('Star Tracker') }}</title>
+<meta charset="UTF-8">
+  <title>{% block pageName %}Star Tracker{% endblock %}</title>
   <link rel="stylesheet" href="/styles.css">
 {% include 'partials/header.twig' %}
 </head>

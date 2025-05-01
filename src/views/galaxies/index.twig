@@ -1,17 +1,22 @@
 {% extends "layouts/_default.twig" %}
 
+{% block pageName %}All Galaxies{% endblock %}
 {% block content %}
-<h1>Galaxies</h1>
 {% for galaxy in galaxies  %}
 <section>
 <h3>{{ galaxy.name }}</h3>
+<li>
+{% include 'partials/actions.twig' with { resource: 'galaxies', id: galaxy.id} %}
+</li>
 <ul>
 <li><strong>size:</strong> {{ galaxy.size }}</li>
 <li><strong>description:</strong> {{ galaxy.description }}</li>
 </ul>
 </section>
 {% endfor %}
+<a href="/galaxies/new">Create New Galaxy</a>
 
 <a href="/">Go back</a>
 
 {% endblock %}
+

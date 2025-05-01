@@ -10,8 +10,10 @@ app.use(express.urlencoded({ extended: false }));
 // load in our RESTful routers
 const routers = require("./src/routers/index.js");
 // load in twig template framework
+const twig = require("twig");
 app.set("views", __dirname + "/src/views");
 app.set("view engine", "twig");
+app.set("twig options", { async: true });
 
 // homepage view
 app.get("/", async (req, res) => {

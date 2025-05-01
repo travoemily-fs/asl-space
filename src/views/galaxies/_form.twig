@@ -1,0 +1,18 @@
+{% extends "layouts/_default.twig" %}
+
+{% block pageName %}
+{% if galaxy is defined %}
+{{ "Edit Galaxy" }}
+{% else %}
+{{ "Create a new Galaxy" }}
+{% endif %}
+{% endblock %}
+{% block main %}
+<h1>
+{% if product is defined %}
+{{ "Edit " }}{{ galaxy.name }}
+{% else %}
+{{ "Create a new Galaxy" }}
+{% endif %}
+</h1>
+{% endblock %}

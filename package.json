@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "watch": "nodemon -e twig,json,js index.js",
-    "dev": "nodemon index.js",
-    "start": "node index.js"
+    "watch": "nodemon -e twig,json,js ./index.js",
+    "dev": "nodemon ./index.js",
+    "start": "node ./index.js"
   },
   "keywords": [],
   "author": "",

@@ -4,23 +4,61 @@
 
 ## views to build out
 
-basic psuedo code , outline of views for each 'model' to be built out.
+very basic outlines of each view, their parts and any important tidbits to take note of.
 
 ## home view
 
 skeleton structure of home page:
 
-- header
+- **header**
   - header.twig
-- navigation
+- **navigation**
   - navbar.twig
-- footer
+- **footer**
   - footer.twig
 
 ## galaxy view
 
+- **index.twig**
+
+- **show.twig**
+
+- **confirm_delete.twig**
+
+- **\_form.twig**
+  - **required attributes:**
+    - name
+    - size
+    - desc
+
 ## stars view
+
+- **index.twig**
+
+- **show.twig**
+
+- **confirm_delete.twig**
+
+- **\_form.twig**
+  - **required attributes:**
+    - name
+    - size
+    - desc
+    - associated galaxy (via select)
 
 ## planets view
 
-## stars/planets view
+- **index.twig**
+
+- **show.twig**
+
+- **confirm_delete.twig**
+
+- **\_form.twig**
+  - **required attributes:**
+    - name
+    - size
+    - desc
+    - associated galaxy (via select)
+    - associated stars (via checkbox)
+

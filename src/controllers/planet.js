@@ -21,7 +21,13 @@ planet > BELONGS TO MANY > stars
 
 // GET localhost:3000/planets
 const index = async (req, res) => {
-  res.render('planets.index')
+  const planets = await Planet.findAll({
+    include: [
+      Galaxy,
+      Star
+    ]
+  })
+  res.render('planets/index', { planets })
 };
 
 
@@ -228,10 +234,24 @@ const getStarsforPlanet = async (req, res) => {
 };
 
 // form controller
-const form = (req,res) => {
-  res.status(200).json(`Galaxy#form(:id)`)
-}
-
+const form = async (req, res) => {
+  // set up associations
+  const galaxies = await Galaxy.findAll();
+  const stars = await Star.findAll();
+  let planet = null;
+  if (`undefined` !== typeof req.params.id) {
+     planet = await Planet.findByPk(req.params.id, {
+      include: Star
+     });
+    res.render("planets/_form", {
+      planet,
+      galaxies,
+      stars
+    });
+  } else {
+    res.render("planets/_form");
+  }
+};
 
 module.exports = {
   index,

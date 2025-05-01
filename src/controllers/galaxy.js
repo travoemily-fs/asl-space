@@ -1,4 +1,4 @@
-const Galaxy = require("../models").Galaxy;
+const { Galaxy, Star, Planet } = require("../models");
 
 /* my notes
 relationships to remember:
@@ -17,11 +17,64 @@ galaxy > HAS MANY > stars
     res.status(500).render("error", { error: "Failed to fetch galaxies" });
   }
 
+(create)
+    try {
+    const { name, size, description } = req.body;
+    // handle no name or empty entries
+    if (!name || name.trim() === "") {
+      return res.status(400).json({
+        error: "Galaxy name is required.",
+      });
+    }
+    // create new galaxy instance
+    const galaxy = await Galaxy.create({ name, size, description });
+    // handle 201 successful new instance
+    res.status(201).json(galaxy);
+  } catch (err) {
+    // including console logs for debugging
+    console.error("Error creating galaxy:", err);
+    // handle 500 server side error
+    res.status(500).json({
+      error: "Server error while creating galaxy.",
+    });
+  }
+
+  (update)
+    try {
+    const { name, size, description } = req.body;
+    const { id } = req.params;
+    const [updated] = await Galaxy.update(
+      { name, size, description },
+      {
+        where: { id },
+      }
+    );
+    if (updated) {
+      // handle 200 success status
+      res.status(200).json({
+        message: "Galaxy updated successfully!",
+      });
+    } else {
+      // handle 404 not found error
+      res.status(404).json({ error: "Galaxy not found." });
+    }
+  } catch (err) {
+    // including console logs for debugging
+    console.error("Error updating galaxy:", err);
+    // handle 500 server side error
+    res.status(500).json({
+      error: "Server error while updating galaxy.",
+    });
+  }
+
 */
 
 // GET localhost:3000/galaxies
 const index = async (req, res) => {
-res.render('galaxies.index')
+  const galaxies = await Galaxy.findAll({
+    include: [Star, Planet],
+  });
+  res.render("galaxies/index", { galaxies });
 };
 
 // GET localhost:3000/galaxies/:id
@@ -50,56 +103,14 @@ const show = async (req, res) => {
 
 // POST localhost:3000/galaxies
 const create = async (req, res) => {
-  try {
-    const { name, size, description } = req.body;
-    // handle no name or empty entries
-    if (!name || name.trim() === "") {
-      return res.status(400).json({
-        error: "Galaxy name is required.",
-      });
-    }
-    // create new galaxy instance
-    const galaxy = await Galaxy.create({ name, size, description });
-    // handle 201 successful new instance
-    res.status(201).json(galaxy);
-  } catch (err) {
-    // including console logs for debugging
-    console.error("Error creating galaxy:", err);
-    // handle 500 server side error
-    res.status(500).json({
-      error: "Server error while creating galaxy.",
-    });
-  }
+  res.render("galaxies/_form")
+
 };
 
 // PUT localhost:3000/galaxies/:id
 const update = async (req, res) => {
-  try {
-    const { name, size, description } = req.body;
-    const { id } = req.params;
-    const [updated] = await Galaxy.update(
-      { name, size, description },
-      {
-        where: { id },
-      }
-    );
-    if (updated) {
-      // handle 200 success status
-      res.status(200).json({
-        message: "Galaxy updated successfully!",
-      });
-    } else {
-      // handle 404 not found error
-      res.status(404).json({ error: "Galaxy not found." });
-    }
-  } catch (err) {
-    // including console logs for debugging
-    console.error("Error updating galaxy:", err);
-    // handle 500 server side error
-    res.status(500).json({
-      error: "Server error while updating galaxy.",
-    });
-  }
+  res.render("galaxies/_form")
+
 };
 
 // GET deletion confirmation localhost:3000/galaxies/:id/delete
@@ -110,7 +121,7 @@ const confirmDelete = async (req, res) => {
       // handle 404 not found error
       return res.status(404).render("error", { error: "Galaxy not found" });
     }
-    res.render("galaxes/confirm_delete", {
+    res.render("galaxies/confirm_delete", {
       title: "Confirm deletion",
       galaxy,
     });
@@ -144,8 +155,24 @@ const remove = async (req, res) => {
 };
 
 // form controller
-const form = (req,res) => {
-  res.status(200).json(`Galaxy#form(:id)`)
-}
+const form = async (req, res) => {
+  // res.status(200).json(`Galaxy#form(:id)`);
+  if (`undefined` !== typeof req.params.id) {
+    const galaxy = await Galaxy.findByPk(req.params.id);
+    res.render("galaxies/_form", {
+      galaxy,
+    });
+  } else {
+    res.render("galaxies/_form");
+  }
+};
 
-module.exports = { index, show, create, update, remove, confirmDelete, form };
+module.exports = {
+  index,
+  show,
+  create,
+  update,
+  remove,
+  confirmDelete,
+  form,
+};

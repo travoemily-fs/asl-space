@@ -15,6 +15,12 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: "CASCADE",
         onUpdate: "CASCADE",
       });
+      // galaxy HAS MANY planets association
+      Galaxy.hasMany(models.Planet, {
+        foreignKey: "GalaxyId",
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
+      });
     }
   }
   Galaxy.init(
