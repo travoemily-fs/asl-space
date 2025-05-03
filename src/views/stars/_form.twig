@@ -1,0 +1,39 @@
+<form action="{{ star is defined ? '/stars/' ~ star.id : '/stars' }}" method="POST">
+  {% if star is defined %}
+    <input type="hidden" name="_method" value="PATCH">
+  {% endif %}
+
+  <div>
+    <label for="name">Name your star:</label>
+    <input type="text" id="name" name="name" required value="{{ star.name | default('') }}">
+  </div>
+
+  <div>
+    <label for="size">Enter the size of your star:</label>
+    <input type="number" id="size" name="size" required value="{{ star.size | default('') }}">
+  </div>
+
+  <div>
+    <label for="description">Describe your star:</label>
+    <textarea id="description" name="description" required>{{ star.description | default('') }}</textarea>
+  </div>
+
+  <div>
+    <label for="GalaxyId">Associated Galaxy:</label>
+    <select name="GalaxyId" id="GalaxyId" required>
+      {% for galaxy in galaxies %}
+        <option value="{{ galaxy.id }}"
+          {% if star is defined and star.GalaxyId == galaxy.id %}selected{% endif %}>
+          {{ galaxy.name }}
+        </option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div>
+    <button type="submit">
+      {{ star.name | default(false) ? "Update Star" : "Create Star" }}
+    </button>
+  </div>
+</form>
+

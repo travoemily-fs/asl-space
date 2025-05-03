@@ -1,0 +1,27 @@
+{% extends "layouts/_default.twig" %}
+
+{% block pageName %}
+    Now viewing {{ planet.name }}
+{% endblock %}
+
+{% block content %}
+<ul>
+    <li><strong>name:</strong> {{ planet.name }}</li>
+    <li><strong>size:</strong> {{ planet.size }}</li>
+    <li><strong>description:</strong> {{ planet.description }}</li>
+    <li><strong>associated galaxy:</strong> {{ planet.Galaxy.name }}</li>
+{% if planet.Stars.length > 0 %}
+    <li><strong>associated stars:</strong>
+        <ul>
+{% for star in planet.Stars %} 
+    <li>{{ star.name }}</li>   
+{% endfor %}        
+        </ul>
+        </li>
+{% else %}
+    <li><em>No associated stars</em></li>
+{% endif %}    
+</ul>
+
+<p><a href="/planets">Go back</a></p>
+{% endblock %}

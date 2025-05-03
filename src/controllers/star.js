@@ -6,22 +6,19 @@ relationships to remember:
 star > BELONGS TO > galaxy
 star > HAS MANY > planets
 
-  try {
-    const stars = await Star.findAll({
-      include: Galaxy,
-    });
-    // handle 200 success status
-    res.status(200).render("stars/index", {
-      title: "All stars",
-      stars,
-    });
-  } catch (err) {
-    console.error("Error fetching stars", err);
-    res.status(500).render("error", { error: "Failed to fetch stars" });
-  }
+
+order of functions:
+1. index  (GET all)
+2. show (GET by ID)
+3. create (POST)
+4. edit (PATCH)
+5. delete confirmation
+6. remove (DELETE)
+7. form method
+
 */
 
-// GET localhost:3000/stars
+// INDEX localhost:3000/stars
 const index = async (req, res) => {
   const stars = await Star.findAll({
     include: Galaxy,
@@ -29,86 +26,72 @@ const index = async (req, res) => {
   res.render("stars/index", { stars });
 };
 
-// GET localhost:3000/stars/ID
+// SHOW localhost:3000/stars/ID
 const show = async (req, res) => {
   try {
-    const star = await Star.findByPk(req.params.id);
-    if (star) {
-      // handle 200 success status
-      res.status(200).json({
-        id: star.id,
-        name: star.name,
-        size: star.size,
-        description: star.description,
-        GalaxyId: star.GalaxyId,
-      });
-    } else {
-      // handle 404 not found error
-      res.status(404).json({ error: "Star not found" });
-    }
-  } catch (err) {
-    // including console logs for debugging
-    console.error("Error fetching star by ID:", err);
-    // handle 500 server side error
-    res.status(500).json({ error: "Server error while retrieving star" });
-  }
-};
-
-// POST localhost:3000/stars
-const create = async (req, res) => {
-  try {
-    const { name, size, description, GalaxyId } = req.body;
-    // handle no name or empty entries
-    if (!name || name.trim() === "") {
-      return res.status(400).json({
-        error: "Star name is required.",
+    const star = await Star.findByPk(req.params.id, {
+      include: [Galaxy, Planet],
+    });
+    if (!star) {
+      // handles 404 not found error
+      return res.status(404).render("error", {
+        error: "Star not found.",
       });
     }
-    // create new star instance
-    const star = await Star.create({ name, size, description, GalaxyId });
-    // handle 201 successful new instance
-    res.status(201).json(star);
+    res.render("stars/show", {
+      star,
+    });
   } catch (err) {
     // including console logs for debugging
-    console.error("Error creating star:", err);
+    console.error("Error retrieving star by ID:", err);
     // handle 500 server side error
-    res.status(500).json({
-      error: "Server error while creating star.",
+    res.status(500).render("error", {
+      error: "Server error while retrieving star.",
     });
   }
 };
 
-// PUT localhost:3000/stars/ID
-const update = async (req, res) => {
+// CREATE localhost:3000/stars
+const create = async (req, res) => {
   try {
     const { name, size, description, GalaxyId } = req.body;
-    const { id } = req.params;
-    const [updated] = await Star.update(
-      { name, size, description, GalaxyId },
-      {
-        where: { id },
-      }
-    );
-    if (updated) {
-      // handle 200 success status
-      res.status(200).json({
-        message: "Star updated successfully!",
-      });
-    } else {
-      // handle 404 not found error
-      res.status(404).json({ error: "Star not found." });
+    const star = await Star.create({ name, size, description, GalaxyId });
+    // searches for available galaxies
+    const galaxy = await Galaxy.findByPk(GalaxyId, { include: Planet });
+    if (galaxy && galaxy.Planets && galaxy.Planets.length > 0) {
+      // populates w/ planets depending on what galaxy is selected
+      const planetIds = galaxy.Planets.map((planet) => planet.id);
+      await star.addPlanets(planetIds);
     }
+    res.redirect("/stars");
+  } catch (err) {
+    // including console logs for debugging
+    console.error("Error creating star:", err);
+    // handle 500 server side error
+    res
+      .status(500)
+      .render("error", { error: "Server error while creating star." });
+  }
+};
+
+// UPDATE localhost:3000/stars/ID
+const update = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, size, description, GalaxyId } = req.body;
+    await Star.update({ name, size, description, GalaxyId }, { where: { id } });
+    res.redirect("/stars");
   } catch (err) {
     // including console logs for debugging
     console.error("Error updating star:", err);
     // handle 500 server side error
-    res.status(500).json({
+    res.status(500).render("error", {
       error: "Server error while updating star.",
     });
   }
 };
 
-// GET deletion confirmation localhost:3000/stars/:id/delete
+// DELETE deletion confirmation localhost:3000/stars/:id/delete
 const confirmDelete = async (req, res) => {
   try {
     const star = await Star.findByPk(req.params.id);
@@ -135,10 +118,7 @@ const remove = async (req, res) => {
     const deleted = await Star.destroy({
       where: { id },
     });
-    // handle 200 successful removal of resource
-    res.status(200).json({
-      deleted,
-    });
+    res.redirect("/stars");
   } catch (err) {
     // including console logs for debugging
     console.error("Error deleting star:", err);
@@ -230,20 +210,22 @@ const getPlanetsForStar = async (req, res) => {
   }
 };
 
-// form controller
+// FORM controller
 const form = async (req, res) => {
-  // set up associations
   const galaxies = await Galaxy.findAll();
   let star = null;
-  if (`undefined` !== typeof req.params.id) {
+
+  if (req.params.id !== undefined) {
     star = await Star.findByPk(req.params.id);
-    res.render("stars/_form", {
+    return res.render("stars/edit", {
       star,
       galaxies,
     });
-  } else {
-    res.render("stars/_form");
   }
+  res.render("stars/create", {
+    star,
+    galaxies,
+  });
 };
 
 module.exports = {

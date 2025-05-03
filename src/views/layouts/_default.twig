@@ -8,6 +8,7 @@
 </head>
 <body>
 {% include 'partials/navbar.twig' %}
+  <h1>{% block pageName %}Star Tracker{% endblock %}</h1>
     {% block content %}
     {% endblock %}
 {% include 'partials/footer.twig' %}

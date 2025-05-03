@@ -1,0 +1,14 @@
+{% extends "layouts/_default.twig" %}
+
+{% block pageName %}
+  Currently editing {{ galaxy.name }}
+{% endblock %}
+
+{% block content %}
+
+    <input type="hidden" name="_method" value="PATCH">
+    {% include "galaxies/_form.twig" %}
+
+
+  <p><a href="/galaxies">Go back</a></p>
+{% endblock %}

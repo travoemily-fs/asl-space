@@ -1,10 +1,13 @@
 {% extends "layouts/_default.twig" %}
 
 {% block content %}
-<h3>Wait!</h3>
-<p>You're about to delete <strong>{{ planet.name }}</strong>. Are you sure you want to proceed? You cannot undo this action!</p>
-<form method="POST" action="/planets/{{ planet.id }}/delete">
-<button type="submit">Yes, delete it!</button>
-<a href="/planets">Cancel</a>
-</form>
+  <h3>Wait!</h3>
+  <p>You're about to delete <strong>{{ planet.name }}</strong>. Are you sure you want to proceed? You cannot undo this action!</p>
+  
+  <form method="POST" action="/planets/{{ planet.id }}/delete">
+    <input type="hidden" name="_method" value="DELETE">
+    <button type="submit">Yes, delete it!</button>
+  </form>
+
+  <a href="/planets">Cancel</a>
 {% endblock %}

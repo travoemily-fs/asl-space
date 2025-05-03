@@ -1,0 +1,52 @@
+<form action="{{ planet is defined ? '/planets/' ~ planet.id : '/planets' }}" method="POST">
+  {% if planet is defined %}
+    <input type="hidden" name="_method" value="PATCH">
+  {% endif %}
+
+  <div>
+    <label for="name">Name your planet:</label>
+    <input
+      type="text"
+      id="name"
+      name="name"
+      required
+      value="{{ planet.name | default('') }}">
+  </div>
+
+  <div>
+    <label for="size">Enter the size of your planet:</label>
+    <input
+      type="number"
+      id="size"
+      name="size"
+      required
+      value="{{ planet.size | default('') }}">
+  </div>
+
+  <div>
+    <label for="description">Describe your planet:</label>
+    <textarea
+      id="description"
+      name="description"
+      required>{{ planet.description | default('') }}</textarea>
+  </div>
+
+  <div>
+    <label for="GalaxyId">Associated Galaxy:</label>
+    <select name="GalaxyId" id="GalaxyId" required>
+      {% for galaxy in galaxies %}
+        <option value="{{ galaxy.id }}"
+          {% if planet is defined and planet.GalaxyId == galaxy.id %}selected{% endif %}
+        >
+          {{ galaxy.name }}
+        </option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div>
+<button type="submit">
+  {{ planet.name | default(false) ? "Update Planet" : "Create Planet" }}
+</button>
+  </div>
+</form>

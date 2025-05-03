@@ -4,72 +4,17 @@ const { Galaxy, Star, Planet } = require("../models");
 relationships to remember:
 galaxy > HAS MANY > stars
 
-
-  try {
-    const galaxies = await Galaxy.findAll();
-// handle 200 success
-    res.status(200).render("galaxies/index", {
-      title: "All Galaxies",
-      galaxies,
-    });
-  } catch (err) {
-    console.error("Error fetching galaxies", err);
-    res.status(500).render("error", { error: "Failed to fetch galaxies" });
-  }
-
-(create)
-    try {
-    const { name, size, description } = req.body;
-    // handle no name or empty entries
-    if (!name || name.trim() === "") {
-      return res.status(400).json({
-        error: "Galaxy name is required.",
-      });
-    }
-    // create new galaxy instance
-    const galaxy = await Galaxy.create({ name, size, description });
-    // handle 201 successful new instance
-    res.status(201).json(galaxy);
-  } catch (err) {
-    // including console logs for debugging
-    console.error("Error creating galaxy:", err);
-    // handle 500 server side error
-    res.status(500).json({
-      error: "Server error while creating galaxy.",
-    });
-  }
-
-  (update)
-    try {
-    const { name, size, description } = req.body;
-    const { id } = req.params;
-    const [updated] = await Galaxy.update(
-      { name, size, description },
-      {
-        where: { id },
-      }
-    );
-    if (updated) {
-      // handle 200 success status
-      res.status(200).json({
-        message: "Galaxy updated successfully!",
-      });
-    } else {
-      // handle 404 not found error
-      res.status(404).json({ error: "Galaxy not found." });
-    }
-  } catch (err) {
-    // including console logs for debugging
-    console.error("Error updating galaxy:", err);
-    // handle 500 server side error
-    res.status(500).json({
-      error: "Server error while updating galaxy.",
-    });
-  }
-
+order of functions:
+1. index  (GET all)
+2. show (GET by ID)
+3. create (POST)
+4. edit (PATCH)
+5. delete confirmation
+6. remove (DELETE)
+7. form method 
 */
 
-// GET localhost:3000/galaxies
+// INDEX localhost:3000/galaxies
 const index = async (req, res) => {
   const galaxies = await Galaxy.findAll({
     include: [Star, Planet],
@@ -77,43 +22,60 @@ const index = async (req, res) => {
   res.render("galaxies/index", { galaxies });
 };
 
-// GET localhost:3000/galaxies/:id
+// SHOW localhost:3000/galaxies/:id
 const show = async (req, res) => {
   try {
-    const galaxy = await Galaxy.findByPk(req.params.id);
-    if (galaxy) {
-      // handle 200 success status
-      res.status(200).json({
-        id: galaxy.id,
-        name: galaxy.name,
-        size: galaxy.size,
-        description: galaxy.description,
-      });
-    } else {
+    const galaxy = await Galaxy.findByPk(req.params.id, {
+      include: [Star, Planet],
+    });
+    if (!galaxy) {
       // handle 404 not found error
-      res.status(404).json({ error: "Galaxy not found" });
+      return res.status(404).render("error", { error: "Galaxy not found" });
     }
+    res.render("galaxies/show", { galaxy });
   } catch (err) {
-    // including console logs for debugging
-    console.error("Error fetching galaxy by ID:", err);
+    // including console log for debugging
+    console.error("Error retrieving galaxy by ID:", err);
     // handle 500 server side error
-    res.status(500).json({ error: "Server error while retrieving galaxy" });
+    res
+      .status(500)
+      .render("error", { error: "Server error while retrieving galaxy." });
   }
 };
 
-// POST localhost:3000/galaxies
+// CREATE(POST) localhost:3000/galaxies/create
 const create = async (req, res) => {
-  res.render("galaxies/_form")
-
+  try {
+    const { name, size, description } = req.body;
+    await Galaxy.create({ name, size, description });
+    res.redirect("/galaxies");
+  } catch (err) {
+    // including console logs for debugging
+    console.error("Error creating galaxy:", err);
+  // handle 500 server side error
+    res.status(500).render("error", { error: "Failed to create galaxy" });
+  }
 };
-
-// PUT localhost:3000/galaxies/:id
+// EDIT(PATCH) localhost:3000/galaxies/:id/edit
 const update = async (req, res) => {
-  res.render("galaxies/_form")
-
+  try {
+    const { name, size, description } = req.body;
+    const galaxy = await Galaxy.findByPk(req.params.id);
+    if (!galaxy) {
+      // handle 404 not found error
+      return res.status(404).render("error", { error: "Galaxy not found" });
+    }
+    await galaxy.update({ name, size, description });
+    res.redirect("/galaxies");
+  } catch (err) {
+    // including console logs for debugging
+    console.error("Error updating galaxy:", err);
+    // handle 500 server side error 
+    res.status(500).render("error", { error: "Failed to update galaxy" });
+  }
 };
 
-// GET deletion confirmation localhost:3000/galaxies/:id/delete
+// DELETE deletion confirmation localhost:3000/galaxies/:id/delete
 const confirmDelete = async (req, res) => {
   try {
     const galaxy = await Galaxy.findByPk(req.params.id);
@@ -136,34 +98,35 @@ const confirmDelete = async (req, res) => {
 // DELETE localhost:3000/galaxies/:id
 const remove = async (req, res) => {
   try {
-    const { id } = req.params;
     const deleted = await Galaxy.destroy({
-      where: { id },
+      where: {
+        id: req.params.id,
+      },
     });
-    // handle 200 successful removal of resource
-    res.status(200).json({
-      deleted,
-    });
+    if (!deleted) {
+      // handles 404 not found error
+      return res.status(404).render("error", {
+        error: "Galaxy not found.",
+      });
+    }
+    res.redirect("/galaxies");
   } catch (err) {
     // including console logs for debugging
     console.error("Error deleting galaxy:", err);
     // handle 500 server side error
-    res.status(500).json({
-      error: "Server error while deleting galaxy.",
+    res.status(500).render("error", {
+      error: "Server error encountered",
     });
   }
 };
 
-// form controller
+// FORM controller
 const form = async (req, res) => {
-  // res.status(200).json(`Galaxy#form(:id)`);
-  if (`undefined` !== typeof req.params.id) {
+  if (typeof req.params.id !== "undefined") {
     const galaxy = await Galaxy.findByPk(req.params.id);
-    res.render("galaxies/_form", {
-      galaxy,
-    });
+    return res.render("galaxies/edit", { galaxy });
   } else {
-    res.render("galaxies/_form");
+    return res.render("galaxies/create", { galaxy: {} });
   }
 };
 

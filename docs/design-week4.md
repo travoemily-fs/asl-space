@@ -2,9 +2,43 @@
 
 > this markdown file will contain all of the updates and important notes taken in regards to module 4!
 
-## views to build out
+## association notes
 
-very basic outlines of each view, their parts and any important tidbits to take note of.
+ONE galaxy can have: MANY stars AND MANY planets
+ONE planet can: belong to ONE galaxy and have MANY stars
+ONE star can: belong to ONE galaxy and have MANY planets
+
+when creating a planet, automatically search for stars based off of the galaxy selected.
+
+## views quick checklist
+
+- [x] **index views**
+
+  - [x] /galaxies
+  - [x] /stars
+  - [x] /planets
+
+  - [] **galaxy**
+    - [x] form
+    - [x] edit
+    - [x] create
+    - [x] show one
+    - [x] delete
+    - [] image uploading
+  - [] **planets**
+    - [x] form
+    - [x] edit
+    - [x] create
+    - [x] show one
+    - [x] delete
+    - [] image uploading
+  - [] **stars**
+    - [x] form
+    - [x] edit
+    - [x] create
+    - [x] show one
+    - [x] delete
+    - [] image uploading
 
 ## home view
 
@@ -61,4 +95,3 @@ skeleton structure of home page:
     - desc
     - associated galaxy (via select)
     - associated stars (via checkbox)
-

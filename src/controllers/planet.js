@@ -3,115 +3,106 @@ const { Planet, Galaxy, Star } = require("../models");
 /* my notes
 relationships to remember:
 planet > BELONGS TO MANY > stars
+planet > BELONGS TO > galaxy
 
-  try {
-    const planets = await Planet.findAll({
-      include: [{ model: Galaxy }, { model: Star }],
-    });
-    // handle 200 success status
-    res.status(200).render("planets/index", {
-      title: "All planets",
-      planets,
-    });
-  } catch (err) {
-    console.error("Error fetching planets", err.message);
-    res.status(500).render("error", { error: err.message });
-  }
+order of functions:
+1. index  (GET all)
+2. show (GET by ID)
+3. create (POST)
+4. edit (PATCH)
+5. delete confirmation
+6. remove (DELETE)
+7. form method
+
+association functions:
+1. add star association (POST)
+2. remove star association (DELETE)
+
 */
 
-// GET localhost:3000/planets
+// INDEX localhost:3000/planets
 const index = async (req, res) => {
   const planets = await Planet.findAll({
-    include: [
-      Galaxy,
-      Star
-    ]
-  })
-  res.render('planets/index', { planets })
+    include: [Galaxy, Star],
+  });
+  res.render("planets/index", { planets });
 };
 
-
-
-// GET localhost:3000/planets/ID
+// SHOW localhost:3000/planets/ID
 const show = async (req, res) => {
   try {
-    const planet = await Planet.findByPk(req.params.id);
-    if (planet) {
-      // handle 200 success status
-      res.status(200).json({
-        id: planet.id,
-        name: planet.name,
-        size: planet.size,
-        description: planet.description,
-        GalaxyId: planet.GalaxyId,
+    const planet = await Planet.findByPk(req.params.id, {
+      include: [Galaxy, Star],
+    });
+    if (!planet) {
+      // handles 404 not found error
+      return res.status(404).render("error", {
+        error: "Planet not found.",
       });
-    } else {
-      // handle 404 not found error
-      res.status(404).json({ error: "Planet not found" });
     }
+    res.render("planets/show", {
+      planet,
+    });
   } catch (err) {
     // including console logs for debugging
-    console.error("Error fetching planet by ID:", err);
+    console.error("Error retrieving planet by ID:", err);
     // handle 500 server side error
-    res.status(500).json({ error: "Server error while retrieving planet" });
+    res.status(500).render("error", {
+      error: "Server error while retrieving planet.",
+    });
   }
 };
 
-// POST localhost:3000/planets
+// CREATE localhost:3000/planets
 const create = async (req, res) => {
   try {
     const { name, size, description, GalaxyId } = req.body;
-    // handle no name or empty entries
-    if (!name || name.trim() === "") {
-      return res.status(400).json({
-        error: "Planet name is required.",
-      });
-    }
-    // create new planet instance
     const planet = await Planet.create({ name, size, description, GalaxyId });
-    // handle 201 successful new instance
-    res.status(201).json(planet);
+    // find associated stars by galaxy assigned to planet
+    const galaxy = await Galaxy.findByPk(GalaxyId, { include: Star });
+    if (galaxy && galaxy.Stars && galaxy.Stars.length > 0) {
+      const starIds = galaxy.Stars.map((star) => star.id);
+      await planet.addStars(starIds);
+    }
+    res.redirect("/planets");
   } catch (err) {
     // including console logs for debugging
     console.error("Error creating planet:", err);
     // handle 500 server side error
-    res.status(500).json({
+    res.status(500).render("error", {
       error: "Server error while creating planet.",
     });
   }
 };
 
-// PUT localhost:3000/planets/ID
+// UPDATE localhost:3000/planets/:id
 const update = async (req, res) => {
   try {
     const { name, size, description, GalaxyId } = req.body;
-    const { id } = req.params;
-    const [updated] = await Planet.update(
-      { name, size, description, GalaxyId },
-      {
-        where: { id },
-      }
-    );
-    if (updated) {
-      // handle 200 success status
-      res.status(200).json({
-        message: "Planet updated successfully!",
-      });
-    } else {
+    const planet = await Planet.findByPk(req.params.id);
+    if (!planet) {
       // handle 404 not found error
-      res.status(404).json({ error: "Planet not found." });
+      return res.status(404).render("error", { error: "Planet not found" });
     }
+    // update planet info
+    await planet.update({ name, size, description, GalaxyId });
+    // checks for galaxie associations
+    const galaxy = await Galaxy.findByPk(GalaxyId, { include: Star });
+    // if galaxy was updated, replace with new stars, if not then print out existing star associations
+    if (galaxy && galaxy.Stars && galaxy.Stars.length > 0) {
+      const starIds = galaxy.Stars.map((star) => star.id);
+      await planet.setStars(starIds);
+    }
+    res.redirect("/planets");
   } catch (err) {
     // including console logs for debugging
     console.error("Error updating planet:", err);
     // handle 500 server side error
-    res.status(500).json({
-      error: "Server error while updating planet.",
-    });
+    res.status(500).render("error", { error: "Failed to update planet" });
   }
 };
 
-// GET deletion confirmation localhost:3000/planets/:id/delete
+// DELETE deletion confirmation localhost:3000/planets/:id/delete
 const confirmDelete = async (req, res) => {
   try {
     const planet = await Planet.findByPk(req.params.id);
@@ -119,7 +110,7 @@ const confirmDelete = async (req, res) => {
       // handle 404 not found error
       return res.status(404).render("error", { error: "Planet not found" });
     }
-    res.render("planet/confirm_delete", {
+    res.render("planets/confirm_delete", {
       title: "Confirm deletion",
       planet,
     });
@@ -138,15 +129,12 @@ const remove = async (req, res) => {
     const deleted = await Planet.destroy({
       where: { id },
     });
-    // handle 200 successful removal of resource
-    res.status(200).json({
-      deleted,
-    });
+    res.redirect("/planets");
   } catch (err) {
     // including console logs for debugging
     console.error("Error deleting planet:", err);
     // handle 500 server side error
-    res.status(500).json({
+    res.status(500).render("error", {
       error: "Server error while deleting planet.",
     });
   }
@@ -233,23 +221,27 @@ const getStarsforPlanet = async (req, res) => {
   }
 };
 
-// form controller
+// FORM controller
 const form = async (req, res) => {
-  // set up associations
   const galaxies = await Galaxy.findAll();
   const stars = await Star.findAll();
   let planet = null;
-  if (`undefined` !== typeof req.params.id) {
-     planet = await Planet.findByPk(req.params.id, {
-      include: Star
-     });
-    res.render("planets/_form", {
+
+  if (req.params.id !== undefined) {
+    planet = await Planet.findByPk(req.params.id, {
+      include: Star,
+    });
+    res.render("planets/edit", {
       planet,
       galaxies,
-      stars
+      stars,
     });
   } else {
-    res.render("planets/_form");
+    res.render("planets/create", {
+      planet,
+      galaxies,
+      stars,
+    });
   }
 };
 
@@ -263,5 +255,5 @@ module.exports = {
   addStar,
   removeStar,
   getStarsforPlanet,
-  form
+  form,
 };

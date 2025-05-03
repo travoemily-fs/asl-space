@@ -1,18 +1,27 @@
-{% extends "layouts/_default.twig" %}
+<form action="{{ galaxy is defined ? '/galaxies/' ~ galaxy.id : '/galaxies' }}" method="POST">
+  {% if galaxy is defined %}
+    <input type="hidden" name="_method" value="PATCH">
+  {% endif %}
 
-{% block pageName %}
-{% if galaxy is defined %}
-{{ "Edit Galaxy" }}
-{% else %}
-{{ "Create a new Galaxy" }}
-{% endif %}
-{% endblock %}
-{% block main %}
-<h1>
-{% if product is defined %}
-{{ "Edit " }}{{ galaxy.name }}
-{% else %}
-{{ "Create a new Galaxy" }}
-{% endif %}
-</h1>
-{% endblock %}
+  <div>
+    <label for="name">Name your galaxy:</label>
+    <input type="text" id="name" name="name" required value="{{ galaxy is defined ? galaxy.name : '' }}">
+  </div>
+
+  <div>
+    <label for="size">Enter the size of your galaxy:</label>
+    <input type="number" id="size" name="size" required value="{{ galaxy is defined ? galaxy.size : '' }}">
+  </div>
+
+  <div>
+    <label for="description">Describe your galaxy:</label>
+    <textarea id="description" name="description" required>{{ galaxy is defined ? galaxy.description : '' }}</textarea>
+  </div>
+
+  <div>
+    <button type="submit">
+{{ galaxy and galaxy.name ? "Update Galaxy" : "Create Galaxy" }}
+    </button>
+  </div>
+</form>
+
