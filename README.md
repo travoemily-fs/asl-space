@@ -4,9 +4,9 @@
 
 This repository houses my **completed** assignment for Advanced Server-Side Languages.
 
-### click [here](https://www.dropbox.com/scl/fi/zkhfqz06dq7cnely1o38i/asl-space-demo-screenshots.pdf?rlkey=fxjefsh7nxhu48ln8g3cy9t2e&st=62d6dfwi&dl=0) to view the live demonstration!
+### click [here](https://youtu.be/HxjA7OpWg9E) to view the live demonstration!
 
-> 🗣️💬&nbsp; **emily says...**&nbsp;&nbsp; i turned in my assignment (late by a few minutes) in a rush because i was afraid the submission would close. when it didn't, i figured i might as well come in and fix things since i had to edit my video link into the README anyway...
+> 🗣️💬&nbsp; **emily says...**&nbsp;&nbsp; i turned in my assignment (late by a few minutes) in a rush because i was afraid the submission would close. when it didn't, i figured i might as well come in and try fix things since i had to edit my video link into the README anyway... i ultimately did not fix anything, so my images don't save/render at all. i tried my best! 
 
 # Week #3 Content
 
