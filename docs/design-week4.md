@@ -18,6 +18,19 @@ when creating a planet, automatically search for stars based off of the galaxy s
   - [x] /stars
   - [x] /planets
 
+- [x] **partials**
+
+  - [x] header
+  - [x] nav bar
+    - [x] galaxy link
+    - [x] stars link
+    - [x] planets link
+  - [x] action bar
+
+    - [x] view object
+    - [x] edit object
+    - [x] delete object
+
   - [] **galaxy**
     - [x] form
     - [x] edit
@@ -40,58 +53,59 @@ when creating a planet, automatically search for stars based off of the galaxy s
     - [x] delete
     - [] image uploading
 
-## home view
+## image uploading checklist
 
-skeleton structure of home page:
+- [x] install express-fileupload
+  - [x] import into index.js
+- [x] create a middleware folder to handle saving files
+  - [x] "uploadImage"
+  - [x] connect middleware to entry index.js file
+- [x] construct an images model that stores relevant metadata
+  - [x] id
+  - [x] extension
+- [x] create image associations with each model inside image model file
+  - [x] star
+    - [x] hasMany() added to star model
+  - [x] galaxy
+    - [x] hasMany() added to galaxy model
+  - [x] planet
+    - [x] hasMany() added to planet model
+- [x] add image to sequelize registry
+  - [x] models/index.js
+- [x] add middleware and imageUpload functionality to all routes
+  - [x] galaxy
+    - [x] create
+    - [x] update
+      - [x] html5 update
+      - [x] restful update
+  - [x] stars
+    - [x] create
+    - [x] update
+      - [x] html5 update
+      - [x] restful update
+  - [x] planets
+    - [x] create
+    - [x] update
+      - [x] html5 update
+      - [x] restful update
+- [x] create an "images.js" file inside /routers
+  - [x] get routes
+  - [x] post routes
+  - [x] delete/remove routes
+- [x] base form with enctype="multipart/form-data" functional
+- [x] create empty "images" folder inside public to house uploaded content
+- [x] modify existing controllers with image support
+  - [x] add image handling logic to create and update methods
+    - [x] galaxy
+    - [x] stars
+    - [x] planets
+- [x] create "images.js" file inside controllers folder
+  - [x] handle the following methods:
+    - [x] create
+    - [x] update
 
-- **header**
-  - header.twig
-- **navigation**
-  - navbar.twig
-- **footer**
-  - footer.twig
+upload path -> app/public/images/EXAMPLE.jpg
+upload load passes through -> image Id and extension
 
-## galaxy view
-
-- **index.twig**
-
-- **show.twig**
-
-- **confirm_delete.twig**
-
-- **\_form.twig**
-  - **required attributes:**
-    - name
-    - size
-    - desc
-
-## stars view
-
-- **index.twig**
-
-- **show.twig**
-
-- **confirm_delete.twig**
-
-- **\_form.twig**
-  - **required attributes:**
-    - name
-    - size
-    - desc
-    - associated galaxy (via select)
-
-## planets view
-
-- **index.twig**
-
-- **show.twig**
-
-- **confirm_delete.twig**
-
-- **\_form.twig**
-  - **required attributes:**
-    - name
-    - size
-    - desc
-    - associated galaxy (via select)
-    - associated stars (via checkbox)
+for each param passed, add "%s"
+that turns into... `public/images/%s%s`

@@ -1,9 +1,94 @@
 body {
-  font-family: Arial, sans-serif;
+  font-family: "roc-grotesk", sans-serif;
   background-color: #f4f4f4;
   color: #333;
 }
-nav a {
-  color: purple;
+
+a {
+  text-decoration: none;
+  text-transform: lowercase;
+  margin: 10px;
+  margin-left: 25px;
+}
+
+strong {
+  font-weight: 600;
+  text-transform:lowercase;
+}
+
+button {
+  font-family: "roc-grotesk", sans-serif;
+  padding: 8px;
+  border-radius: 4px;
+  border: none;
+  text-transform: lowercase;
+  background-color: rgba(221, 160, 221, 0.67);
+  margin: 10px;
+  border: 1px solid rgb(175, 126, 175);
+}
+
+button:hover {
+  background-color: plum;
+}
+
+nav li {
+  display: inline-block;
+  margin-left: 10px;
   margin-right: 10px;
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+
+nav a {
+  text-decoration: none;
+  font-family: "roc-grotesk", sans-serif;
+  text-transform: lowercase;
+  font-weight: 400;
+  margin-left: 10px;
+}
+
+h1 {
+  font-family: "moby-monospace", monospace;
+}
+
+h2 {
+  font-family: "moby-monospace", monospace;
+  font-size: 1rem;
+  padding: 10px;
+}
+
+.upload {
+  margin-top: 3px;
+}
+
+
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  width: 200px;
+  border-radius: 8px;
+  margin: 1rem 0;
+  object-fit: cover;
+}
+
+form {
+  padding: 10px;
+  margin: 5px;
+}
+
+input {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  padding: 8px;
+  display: block;
+  font-family: "roc-grotesk", sans-serif;
+}
+
+textarea {
+  display: block;
+  width: 250px;
+  padding: 10px;
+  font-family: "roc-grotesk", sans-serif;
 }

@@ -1,22 +1,31 @@
 {% extends "layouts/_default.twig" %}
 
 {% block pageName %}All Galaxies{% endblock %}
+
 {% block content %}
-{% for galaxy in galaxies  %}
-<section>
-<h3>{{ galaxy.name }}</h3>
-<li>
-{% include 'partials/actions.twig' with { resource: 'galaxies', id: galaxy.id} %}
-</li>
-<ul>
-<li><strong>size:</strong> {{ galaxy.size }}</li>
-<li><strong>description:</strong> {{ galaxy.description }}</li>
-</ul>
-</section>
-{% endfor %}
-<a href="/galaxies/new">Create New Galaxy</a>
+  {% for galaxy in galaxies %}
+    <section>
+      <h3>{{ galaxy.name }}</h3>
 
-<a href="/">Go back</a>
+      {% if galaxy.Image %}
+        <img src="/images/{{ galaxy.Image.filename }}" alt="Galaxy image" width="200" />
+      {% else %}
+        <em>No image available</em>
+      {% endif %}
 
+      <div>
+        {% include 'partials/actions.twig' with { resource: 'galaxies', id: galaxy.id } %}
+      </div>
+
+      <ul>
+        <li><strong>size:</strong> {{ galaxy.size }}</li>
+        <li><strong>description:</strong> {{ galaxy.description }}</li>
+      </ul>
+    </section>
+  {% endfor %}
+
+  <a href="/galaxies/new">Create New Galaxy</a>
+  <br />
+  <a href="/">Go back</a>
 {% endblock %}
 

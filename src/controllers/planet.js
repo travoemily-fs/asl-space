@@ -58,6 +58,8 @@ const create = async (req, res) => {
   try {
     const { name, size, description, GalaxyId } = req.body;
     const planet = await Planet.create({ name, size, description, GalaxyId });
+    // pass planet id to middleware
+    req.imageId = planet.id;
     // find associated stars by galaxy assigned to planet
     const galaxy = await Galaxy.findByPk(GalaxyId, { include: Star });
     if (galaxy && galaxy.Stars && galaxy.Stars.length > 0) {
@@ -80,6 +82,8 @@ const update = async (req, res) => {
   try {
     const { name, size, description, GalaxyId } = req.body;
     const planet = await Planet.findByPk(req.params.id);
+    // pass planet id to middleware
+    req.imageId = planet.id;
     if (!planet) {
       // handle 404 not found error
       return res.status(404).render("error", { error: "Planet not found" });

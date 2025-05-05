@@ -19,10 +19,18 @@ module.exports = (sequelize, DataTypes) => {
       // MANY stars belong to MANY planets
       Star.belongsToMany(models.Planet, {
         through: "StarsPlanets",
-        foreignKey:"StarId",
-        otherKey:"PlanetId",
+        foreignKey: "StarId",
+        otherKey: "PlanetId",
         onDelete: "CASCADE",
         onUpdate: "CASCADE",
+      });
+      // image association
+      Star.hasMany(models.Image, {
+        foreignKey: "modelId",
+        constraints: false,
+        scope: {
+          model: "Star",
+        },
       });
     }
   }

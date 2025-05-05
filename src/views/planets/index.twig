@@ -1,14 +1,22 @@
 {% extends "layouts/_default.twig" %}
 
 {% block pageName %}All Planets{% endblock %}
-{% block content %}
 
+{% block content %}
   {% for planet in planets %}
     <section>
       <h3>{{ planet.name }}</h3>
-      <li>
-{% include 'partials/actions.twig' with { resource: 'planets', id: planet.id} %}
-</li>
+
+      {% if planet.Image %}
+        <img src="/images/{{ planet.Image.filename }}" alt="Planet image" width="200" />
+      {% else %}
+        <em>No image available</em>
+      {% endif %}
+
+      <div>
+        {% include 'partials/actions.twig' with { resource: 'planets', id: planet.id } %}
+      </div>
+
       <ul>
         <li><strong>Size:</strong> {{ planet.size }}</li>
         <li><strong>Description:</strong> {{ planet.description }}</li>
@@ -28,7 +36,7 @@
       </ul>
     </section>
   {% endfor %}
-<a href="/planets/new">Create New Planet</a>
 
+  <a href="/planets/new">Create New Planet</a>
   <p><a href="/">Go back</a></p>
 {% endblock %}

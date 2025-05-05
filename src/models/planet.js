@@ -23,6 +23,14 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: "CASCADE",
         onUpdate: "CASCADE",
       });
+      // image association
+      Planet.hasMany(models.Image, {
+        foreignKey: "modelId",
+        constraints: false,
+        scope: {
+          model: "Planet",
+        },
+      });
     }
   }
   Planet.init(

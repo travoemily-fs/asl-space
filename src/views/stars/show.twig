@@ -1,27 +1,35 @@
 {% extends "layouts/_default.twig" %}
 
 {% block pageName %}
-    Now viewing {{ star.name }}
+  Now viewing {{ star.name }}
 {% endblock %}
 
 {% block content %}
-<ul>
+
+  {% if star.Image %}
+    <img src="/images/{{ star.Image.filename }}" alt="Star image" width="200" />
+  {% else %}
+    <em>No image available</em>
+  {% endif %}
+
+  <ul>
     <li><strong>name:</strong> {{ star.name }}</li>
     <li><strong>size:</strong> {{ star.size }}</li>
     <li><strong>description:</strong> {{ star.description }}</li>
     <li><strong>associated galaxy:</strong> {{ star.Galaxy.name }}</li>
-{% if star.Planets.length > 0 %}
-    <li><strong>associated stars:</strong>
-        <ul>
-{% for star in star.Planets %} 
-    <li>{{ star.name }}</li>   
-{% endfor %}        
-        </ul>
-        </li>
-{% else %}
-    <li><em>No associated planets</em></li>
-{% endif %}    
-</ul>
 
-<p><a href="/planets">Go back</a></p>
+    {% if star.Planets.length > 0 %}
+      <li><strong>associated planets:</strong>
+        <ul>
+          {% for planet in star.Planets %}
+            <li>{{ planet.name }}</li>
+          {% endfor %}
+        </ul>
+      </li>
+    {% else %}
+      <li><em>No associated planets</em></li>
+    {% endif %}
+  </ul>
+
+  <p><a href="/planets">Go back</a></p>
 {% endblock %}

@@ -21,6 +21,14 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: "CASCADE",
         onUpdate: "CASCADE",
       });
+      // image association
+      Galaxy.hasMany(models.Image, {
+        foreignKey: 'modelId',
+        constraints: false,
+        scope: {
+          model: "Galaxy"
+        }
+      })
     }
   }
   Galaxy.init(

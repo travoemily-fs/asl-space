@@ -56,6 +56,8 @@ const create = async (req, res) => {
   try {
     const { name, size, description, GalaxyId } = req.body;
     const star = await Star.create({ name, size, description, GalaxyId });
+    // pass star id to middleware
+    req.imageId = star.id;
     // searches for available galaxies
     const galaxy = await Galaxy.findByPk(GalaxyId, { include: Planet });
     if (galaxy && galaxy.Planets && galaxy.Planets.length > 0) {
@@ -79,6 +81,8 @@ const update = async (req, res) => {
   try {
     const { id } = req.params;
     const { name, size, description, GalaxyId } = req.body;
+    // pass star id to middleware
+    req.imageId = id;
     await Star.update({ name, size, description, GalaxyId }, { where: { id } });
     res.redirect("/stars");
   } catch (err) {

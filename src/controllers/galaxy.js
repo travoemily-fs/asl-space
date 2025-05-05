@@ -47,15 +47,18 @@ const show = async (req, res) => {
 const create = async (req, res) => {
   try {
     const { name, size, description } = req.body;
-    await Galaxy.create({ name, size, description });
+    const galaxy = await Galaxy.create({ name, size, description });
+    // pass the galaxy id for middleware use
+    req.imageId = galaxy.id;
     res.redirect("/galaxies");
   } catch (err) {
     // including console logs for debugging
     console.error("Error creating galaxy:", err);
-  // handle 500 server side error
+    // handle 500 server side error
     res.status(500).render("error", { error: "Failed to create galaxy" });
   }
 };
+
 // EDIT(PATCH) localhost:3000/galaxies/:id/edit
 const update = async (req, res) => {
   try {
@@ -65,12 +68,14 @@ const update = async (req, res) => {
       // handle 404 not found error
       return res.status(404).render("error", { error: "Galaxy not found" });
     }
+    // pass the galaxy id for middleware use
+    req.imageId = galaxy.id;
     await galaxy.update({ name, size, description });
     res.redirect("/galaxies");
   } catch (err) {
     // including console logs for debugging
     console.error("Error updating galaxy:", err);
-    // handle 500 server side error 
+    // handle 500 server side error
     res.status(500).render("error", { error: "Failed to update galaxy" });
   }
 };

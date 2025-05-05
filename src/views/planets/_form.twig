@@ -1,4 +1,4 @@
-<form action="{{ planet is defined ? '/planets/' ~ planet.id : '/planets' }}" method="POST">
+<form action="{{ planet is defined ? '/planets/' ~ planet.id : '/planets' }}" method="POST" enctype="multipart/form-data">
   {% if planet is defined %}
     <input type="hidden" name="_method" value="PATCH">
   {% endif %}
@@ -44,9 +44,11 @@
     </select>
   </div>
 
+  {% include "images/_form.twig" %}
+
   <div>
-<button type="submit">
-  {{ planet.name | default(false) ? "Update Planet" : "Create Planet" }}
-</button>
+    <button type="submit">
+      {{ planet.name | default(false) ? "Update Planet" : "Create Planet" }}
+    </button>
   </div>
 </form>
