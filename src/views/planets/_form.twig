@@ -43,9 +43,7 @@
       {% endfor %}
     </select>
   </div>
-
-  {% include "images/_form.twig" %}
-
+{% include "images/_form.twig" %}
   <div>
     <button type="submit">
       {{ planet.name | default(false) ? "Update Planet" : "Create Planet" }}

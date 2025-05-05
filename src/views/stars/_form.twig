@@ -29,9 +29,7 @@
       {% endfor %}
     </select>
   </div>
-
-  {% include "images/_form.twig" %}
-
+{% include "images/_form.twig" %}
   <div>
     <button type="submit">
       {{ star.name | default(false) ? "Update Star" : "Create Star" }}

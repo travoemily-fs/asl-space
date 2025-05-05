@@ -1,14 +1,13 @@
 {% extends "layouts/_default.twig" %}
 
 {% block pageName %}
- <h2 class="edittitle">Currently editing {{ planet.name }}</h2>
+Currently editing {{ planet.name }}
 {% endblock %}
 
 {% block content %}
 
     <input type="hidden" name="_method" value="PATCH">
     {% include "planets/_form.twig" %}
-
 
   <p><a href="/planets">Go back</a></p>
 {% endblock %}

@@ -60,6 +60,11 @@ const create = async (req, res) => {
     const planet = await Planet.create({ name, size, description, GalaxyId });
     // pass planet id to middleware
     req.imageId = planet.id;
+    // move uploaded file if present
+    if (req.files && req.files.image) {
+      const { uploadImage } = require("../middlewares");
+      await uploadImage(req, res, () => {});
+    }
     // find associated stars by galaxy assigned to planet
     const galaxy = await Galaxy.findByPk(GalaxyId, { include: Star });
     if (galaxy && galaxy.Stars && galaxy.Stars.length > 0) {
@@ -90,13 +95,19 @@ const update = async (req, res) => {
     }
     // update planet info
     await planet.update({ name, size, description, GalaxyId });
-    // checks for galaxie associations
+    // move uploaded file if present
+    if (req.files && req.files.image) {
+      const { uploadImage } = require("../middlewares");
+      await uploadImage(req, res, () => {});
+    }
+    // checks for galaxu associations
     const galaxy = await Galaxy.findByPk(GalaxyId, { include: Star });
     // if galaxy was updated, replace with new stars, if not then print out existing star associations
     if (galaxy && galaxy.Stars && galaxy.Stars.length > 0) {
       const starIds = galaxy.Stars.map((star) => star.id);
       await planet.setStars(starIds);
     }
+
     res.redirect("/planets");
   } catch (err) {
     // including console logs for debugging

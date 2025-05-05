@@ -50,6 +50,11 @@ const create = async (req, res) => {
     const galaxy = await Galaxy.create({ name, size, description });
     // pass the galaxy id for middleware use
     req.imageId = galaxy.id;
+    // manually invoke upload middleware
+    if (req.files && req.files.image) {
+      const { uploadImage } = require("../middlewares");
+      await uploadImage(req, res, () => {});
+    }
     res.redirect("/galaxies");
   } catch (err) {
     // including console logs for debugging
@@ -71,6 +76,11 @@ const update = async (req, res) => {
     // pass the galaxy id for middleware use
     req.imageId = galaxy.id;
     await galaxy.update({ name, size, description });
+    // manually invoke upload middleware
+    if (req.files && req.files.image) {
+      const { uploadImage } = require("../middlewares");
+      await uploadImage(req, res, () => {});
+    }
     res.redirect("/galaxies");
   } catch (err) {
     // including console logs for debugging

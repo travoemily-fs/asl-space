@@ -3,16 +3,23 @@ const path = require("path");
 const { Image } = require("../models");
 
 const uploadImage = async (req, res, next) => {
-  let uploadPath = `${__dirname}/../public/images/%s%s`;
+  // if no imageId, skip the image logic but allow the route to proceed
+  if (!req.imageId) {
+    return next();
+  }
 
-  // if there's no imageId, exit early
-  if (!req.imageId) return next();
-
-  // prevent crash if req.files or image is undefined
-  if (!req.files || !req.files.image) return next();
-
-  if (Object.keys(req.files).length > 0) {
+  // if files were uploaded
+  if (req.files && Object.keys(req.files).length > 0) {
     const extension = path.extname(req.files.image.name);
+
+    let uploadPath = path.resolve(
+      __dirname,
+      "../..",
+      "public",
+      "images",
+      `${req.imageId}${extension}`
+    );
+
     // remember that we are passing 2 params here, the image Id and extension
     uploadPath = util.format(uploadPath, req.imageId, extension);
 

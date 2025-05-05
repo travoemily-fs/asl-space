@@ -17,10 +17,7 @@
     <label for="description">Describe your galaxy:</label>
     <textarea id="description" name="description" required>{{ galaxy is defined ? galaxy.description : '' }}</textarea>
   </div>
-
-
-  {% include "images/_form.twig" %}
-
+{% include "images/_form.twig" %}
   <div>
     <button type="submit">
       {{ galaxy and galaxy.name ? "Update Galaxy" : "Create Galaxy" }}

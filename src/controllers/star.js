@@ -58,6 +58,11 @@ const create = async (req, res) => {
     const star = await Star.create({ name, size, description, GalaxyId });
     // pass star id to middleware
     req.imageId = star.id;
+    // move uploaded file if present
+    if (req.files && req.files.image) {
+      const { uploadImage } = require("../middlewares");
+      await uploadImage(req, res, () => {});
+    }
     // searches for available galaxies
     const galaxy = await Galaxy.findByPk(GalaxyId, { include: Planet });
     if (galaxy && galaxy.Planets && galaxy.Planets.length > 0) {
@@ -83,7 +88,13 @@ const update = async (req, res) => {
     const { name, size, description, GalaxyId } = req.body;
     // pass star id to middleware
     req.imageId = id;
+    // update star info
     await Star.update({ name, size, description, GalaxyId }, { where: { id } });
+    // move uploaded file if present
+    if (req.files && req.files.image) {
+      const { uploadImage } = require("../middlewares");
+      await uploadImage(req, res, () => {});
+    }
     res.redirect("/stars");
   } catch (err) {
     // including console logs for debugging

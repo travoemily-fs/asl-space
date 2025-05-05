@@ -1,10 +1,12 @@
-# 🔗 💻 ASL Assignment #️⃣3️⃣✨
+# 🔗 💻 ASL Final Assignment✨
 
 ### 📁🪐 Space Object Library API 💫
 
 This repository houses my **completed** assignment for Advanced Server-Side Languages.
 
-> 🗣️💬&nbsp; **emily says...**&nbsp;&nbsp; click [here](https://www.dropbox.com/scl/fi/zkhfqz06dq7cnely1o38i/asl-space-demo-screenshots.pdf?rlkey=fxjefsh7nxhu48ln8g3cy9t2e&st=62d6dfwi&dl=0) to view the live demonstration!
+### click [here](https://www.dropbox.com/scl/fi/zkhfqz06dq7cnely1o38i/asl-space-demo-screenshots.pdf?rlkey=fxjefsh7nxhu48ln8g3cy9t2e&st=62d6dfwi&dl=0) to view the live demonstration!
+
+> 🗣️💬&nbsp; **emily says...**&nbsp;&nbsp; i turned in my assignment (late by a few minutes) in a rush because i was afraid the submission would close. when it didn't, i figured i might as well come in and fix things since i had to edit my video link into the README anyway...
 
 # Week #3 Content
 
